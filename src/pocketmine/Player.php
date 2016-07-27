@@ -3155,6 +3155,19 @@ class Player extends Human implements CommandSender, InventoryHolder, ChunkLoade
 								$target->setOnFire($fireEv->getDuration());
 							}
 						}
+						//THRONS
+						if($this->isSurvival()){
+							$ev->createThornsDamage();
+							if($ev->getThornsDamage() > 0){
+								$ThronsEvent = new EntityDamageByEntityEvent($target, $this, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $ev->getThornsDamage(), 0);
+								if(!$ThronsEvent->isCancelled()){
+									if($this->attack($ThronsEvent->getFinalDamage(), $ThronsEvent) === true){
+										$ThronsEvent->useArmors();
+										$ev->setThornsArmorUse();
+									}
+								}
+							}
+						}
 						$ev->useArmors();
 					}
 
