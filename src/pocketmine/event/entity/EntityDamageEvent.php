@@ -64,10 +64,10 @@ class EntityDamageEvent extends EntityEvent implements Cancellable{
 	private $fireProtectL = 0;
 	/** @var array */
 	private $modifiers;
-	private $ratemodifiers = [];
+	private $rateModifiers = [];
 	private $originals;
-	private $use_armors = [];
-	private $Thorns_level = [];
+	private $usedArmors = [];
+	private $ThornsLevel = [];
 	private $ThornsArmor;
 	private $ThornsDamage = 0;
 
@@ -123,7 +123,7 @@ class EntityDamageEvent extends EntityEvent implements Cancellable{
 					foreach($entity->getInventory()->getArmorContents() as  $index=>$i){
 						if($i->isArmor()){
 							$points += $i->getArmorValue();
-							$this->use_armors[$index] = 1;
+							$this->usedArmors[$index] = 1;
 						}
 					}
 					if($points !== 0){
@@ -146,13 +146,13 @@ class EntityDamageEvent extends EntityEvent implements Cancellable{
 						default;
 							break;
 					}
-					foreach($this->use_armors as $index => $cost){
+					foreach($this->usedArmors as $index => $cost){
 						$i = $entity->getInventory()->getArmorItem($index);
 						if($i->isArmor()){
 							$this->EPF += $i->getEnchantmentLevel(Enchantment::TYPE_ARMOR_PROTECTION);
 							$this->fireProtectL = max($this->fireProtectL, $i->getEnchantmentLevel(Enchantment::TYPE_ARMOR_FIRE_PROTECTION));
 							if($i->getEnchantmentLevel(Enchantment::TYPE_ARMOR_THORNS) > 0){
-								$this->Thorns_level[$index] = $i->getEnchantmentLevel(Enchantment::TYPE_ARMOR_THORNS);
+								$this->ThornsLevel[$index] = $i->getEnchantmentLevel(Enchantment::TYPE_ARMOR_THORNS);
 							}
 							if($spe_Prote !== null){
 								$this->EPF += 2 * $i->getEnchantmentLevel($spe_Prote);
@@ -235,8 +235,8 @@ class EntityDamageEvent extends EntityEvent implements Cancellable{
 	 * @return float 1 - the percentage
 	 */
 	public function getRateDamage($type = self::MODIFIER_BASE){
-		if(isset($this->ratemodifiers[$type])){
-			return $this->ratemodifiers[$type];
+		if(isset($this->rateModifiers[$type])){
+			return $this->rateModifiers[$type];
 		}
 		return 1;
 	}
@@ -250,7 +250,7 @@ class EntityDamageEvent extends EntityEvent implements Cancellable{
 	 * Notice:If you want to add/reduce the damage by multiplying. Plz use this function.
 	 */
 	public function setRateDamage($damage, $type = self::MODIFIER_BASE){
-		$this->ratemodifiers[$type] = $damage;
+		$this->rateModifiers[$type] = $damage;
 	}
 
 	/**
@@ -267,7 +267,7 @@ class EntityDamageEvent extends EntityEvent implements Cancellable{
 	 */
 	public function getFinalDamage(){
 		$damage = $this->modifiers[self::MODIFIER_BASE];
-		foreach($this->ratemodifiers as $type => $d){
+		foreach($this->rateModifiers as $type => $d){
 			$damage *= $d;
 		}
 		foreach($this->modifiers as $type => $d){
@@ -279,13 +279,13 @@ class EntityDamageEvent extends EntityEvent implements Cancellable{
 	}
 
 	/**
-	 * @return Item $use_armors
-	 * notice: $use_armors $index->$cost
+	 * @return Item $usedArmors
+	 * notice: $usedArmors $index->$cost
 	 * $index: the $index of ArmorInventory
 	 * $cost:  the num of durability cost
 	 */
 	public function getUsedArmors(){
-		return $this->use_armors;
+		return $this->usedArmors;
 	}
 
 	/**
@@ -301,7 +301,7 @@ class EntityDamageEvent extends EntityEvent implements Cancellable{
 	public function useArmors(){
 		if($this->entity instanceof Player){
 			if($this->entity->isSurvival() and $this->entity->isAlive()){
-				foreach ($this->use_armors as $index=>$cost){
+				foreach ($this->usedArmors as $index=>$cost){
 					$i = $this->entity->getInventory()->getArmorItem($index);
 					if($i->isArmor()){
 						$i->useOn($i, $cost);
@@ -315,9 +315,9 @@ class EntityDamageEvent extends EntityEvent implements Cancellable{
 	}
 
 	public function createThornsDamage(){
-		if($this->Thorns_level !== []){
-			$this->ThornsArmor = array_rand($this->Thorns_level);
-			$ThronsL = $this->Thorns_level[$this->ThornsArmor];
+		if($this->ThornsLevel !== []){
+			$this->ThornsArmor = array_rand($this->ThornsLevel);
+			$ThronsL = $this->ThornsLevel[$this->ThornsArmor];
 			if(mt_rand(1, 100) < $ThronsL * 15){
 				$this->ThornsDamage = mt_rand(1, 4);
 			}
@@ -335,7 +335,7 @@ class EntityDamageEvent extends EntityEvent implements Cancellable{
 		if($this->ThornsArmor === unll){
 			return false;
 		}else{
-			$this->use_armors[$this->ThornsArmor] = 3;
+			$this->usedArmors[$this->ThornsArmor] = 3;
 			return true;
 		}
 	}
