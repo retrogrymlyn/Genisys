@@ -67,9 +67,9 @@ class EntityDamageEvent extends EntityEvent implements Cancellable{
 	private $rateModifiers = [];
 	private $originals;
 	private $usedArmors = [];
-	private $ThornsLevel = [];
-	private $ThornsArmor;
-	private $ThornsDamage = 0;
+	private $thornsLevel = [];
+	private $thornsArmor;
+	private $thornsDamage = 0;
 
 
 
@@ -120,7 +120,7 @@ class EntityDamageEvent extends EntityEvent implements Cancellable{
 				case self::CAUSE_ENTITY_EXPLOSION:
 				case self::CAUSE_LIGHTNING:
 					$points = 0;
-					foreach($entity->getInventory()->getArmorContents() as  $index=>$i){
+					foreach($entity->getInventory()->getArmorContents() as $index => $i){
 						if($i->isArmor()){
 							$points += $i->getArmorValue();
 							$this->usedArmors[$index] = 1;
@@ -152,7 +152,7 @@ class EntityDamageEvent extends EntityEvent implements Cancellable{
 							$this->EPF += $i->getEnchantmentLevel(Enchantment::TYPE_ARMOR_PROTECTION);
 							$this->fireProtectL = max($this->fireProtectL, $i->getEnchantmentLevel(Enchantment::TYPE_ARMOR_FIRE_PROTECTION));
 							if($i->getEnchantmentLevel(Enchantment::TYPE_ARMOR_THORNS) > 0){
-								$this->ThornsLevel[$index] = $i->getEnchantmentLevel(Enchantment::TYPE_ARMOR_THORNS);
+								$this->thornsLevel[$index] = $i->getEnchantmentLevel(Enchantment::TYPE_ARMOR_THORNS);
 							}
 							if($spe_Prote !== null){
 								$this->EPF += 2 * $i->getEnchantmentLevel($spe_Prote);
@@ -315,27 +315,27 @@ class EntityDamageEvent extends EntityEvent implements Cancellable{
 	}
 
 	public function createThornsDamage(){
-		if($this->ThornsLevel !== []){
-			$this->ThornsArmor = array_rand($this->ThornsLevel);
-			$ThronsL = $this->ThornsLevel[$this->ThornsArmor];
+		if($this->thornsLevel !== []){
+			$this->thornsArmor = array_rand($this->thornsLevel);
+			$ThronsL = $this->thornsLevel[$this->thornsArmor];
 			if(mt_rand(1, 100) < $ThronsL * 15){
-				$this->ThornsDamage = mt_rand(1, 4);
+				$this->thornsDamage = mt_rand(1, 4);
 			}
 		}
 	}
 
 	public function getThornsDamage(){
-		return $this->ThornsDamage;
+		return $this->thornsDamage;
 	}
 
 	/**
 	 * @return bool should be used after getThornsDamage()
 	 */
 	public function setThornsArmorUse(){
-		if($this->ThornsArmor === unll){
+		if($this->thornsArmor === unll){
 			return false;
 		}else{
-			$this->usedArmors[$this->ThornsArmor] = 3;
+			$this->usedArmors[$this->thornsArmor] = 3;
 			return true;
 		}
 	}
