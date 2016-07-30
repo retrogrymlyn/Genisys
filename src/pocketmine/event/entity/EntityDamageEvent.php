@@ -72,7 +72,6 @@ class EntityDamageEvent extends EntityEvent implements Cancellable{
 	private $thornsDamage = 0;
 
 
-
 	/**
 	 * @param Entity    $entity
 	 * @param int       $cause
@@ -131,7 +130,7 @@ class EntityDamageEvent extends EntityEvent implements Cancellable{
 					}
 					//For Protection
 					$spe_Prote = null;
-					switch ($cause){
+					switch($cause){
 						case self::CAUSE_ENTITY_EXPLOSION:
 						case self::CAUSE_BLOCK_EXPLOSION:
 							$spe_Prote = Enchantment::TYPE_ARMOR_EXPLOSION_PROTECTION;
@@ -301,7 +300,7 @@ class EntityDamageEvent extends EntityEvent implements Cancellable{
 	public function useArmors(){
 		if($this->entity instanceof Player){
 			if($this->entity->isSurvival() and $this->entity->isAlive()){
-				foreach ($this->usedArmors as $index=>$cost){
+				foreach($this->usedArmors as $index => $cost){
 					$i = $this->entity->getInventory()->getArmorItem($index);
 					if($i->isArmor()){
 						$i->useOn($i, $cost);

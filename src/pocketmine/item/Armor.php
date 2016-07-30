@@ -50,11 +50,11 @@ abstract class Armor extends Item{
 	/**
 	 *
 	 * @param Item $object
+	 * @param int $cost
 	 *
 	 * @return bool
 	 */
-	public function useOn($object, $cost = 1)
-	{
+	public function useOn($object, int $cost = 1){
 		if($this->isUnbreakable()){
 			return true;
 		}
