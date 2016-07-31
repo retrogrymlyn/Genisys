@@ -374,8 +374,10 @@ class PlayerInventory extends BaseInventory{
 	public function clearAll(){
 		$limit = $this->getSize() + 4;
 		for($index = 0; $index < $limit; ++$index){
-			$this->clear($index);
+			$this->clear($index, false);
 		}
+		$this->hotbar = range(0, $this->getHotbarSize() - 1, 1);
+		$this->sendContents($this->getViewers());
 	}
 
 	/**
@@ -498,6 +500,8 @@ class PlayerInventory extends BaseInventory{
 		$pk = new ContainerSetSlotPacket();
 		$pk->slot = $index;
 		$pk->item = clone $this->getItem($index);
+		//Update the linked hotbar slot
+		$pk->hotbarSlot = (int) array_search($index, $this->hotbar);
 
 		foreach($target as $player){
 			if($player === $this->getHolder()){
