@@ -25,6 +25,7 @@ use pocketmine\entity\Effect;
 use pocketmine\entity\Entity;
 use pocketmine\event\Cancellable;
 use pocketmine\inventory\PlayerInventory;
+use pocketmine\item\Armor;
 use pocketmine\Player;
 use pocketmine\item\Item;
 use pocketmine\item\enchantment\enchantment;
@@ -303,6 +304,7 @@ class EntityDamageEvent extends EntityEvent implements Cancellable{
 				foreach($this->usedArmors as $index => $cost){
 					$i = $this->entity->getInventory()->getArmorItem($index);
 					if($i->isArmor()){
+						/** @var Armor $i */
 						$i->useOn($i, $cost);
 						$this->entity->getInventory()->setArmorItem($index, $i);
 					}
@@ -316,8 +318,8 @@ class EntityDamageEvent extends EntityEvent implements Cancellable{
 	public function createThornsDamage(){
 		if($this->thornsLevel !== []){
 			$this->thornsArmor = array_rand($this->thornsLevel);
-			$ThronsL = $this->thornsLevel[$this->thornsArmor];
-			if(mt_rand(1, 100) < $ThronsL * 15){
+			$thornsL = $this->thornsLevel[$this->thornsArmor];
+			if(mt_rand(1, 100) < $thornsL * 15){
 				$this->thornsDamage = mt_rand(1, 4);
 			}
 		}
@@ -331,7 +333,7 @@ class EntityDamageEvent extends EntityEvent implements Cancellable{
 	 * @return bool should be used after getThornsDamage()
 	 */
 	public function setThornsArmorUse(){
-		if($this->thornsArmor === unll){
+		if($this->thornsArmor === null){
 			return false;
 		}else{
 			$this->usedArmors[$this->thornsArmor] = 3;
