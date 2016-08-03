@@ -437,6 +437,7 @@ class Human extends Creature implements ProjectileSource, InventoryHolder{
 			//Hotbar
 			for($slot = 0; $slot < $this->inventory->getHotbarSize(); ++$slot){
 				$inventorySlotIndex = $this->inventory->getHotbarSlotIndex($slot);
+				//What happens when this is -1?
 				$item = $this->inventory->getItem($inventorySlotIndex);
 				$tag = NBT::putItemHelper($item, $slot);
 				$tag->TrueSlot = new ByteTag("TrueSlot", $inventorySlotIndex);
