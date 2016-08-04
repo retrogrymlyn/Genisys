@@ -39,7 +39,7 @@ class InventoryType{
 	const DROPPER = 11;
 	const HOPPER = 12;
 	
-	const PLAYER_FLOATING = 255;
+	const PLAYER_FLOATING = 254;
 
 	private static $default = [];
 
